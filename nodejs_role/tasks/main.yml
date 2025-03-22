@@ -1,0 +1,30 @@
+---
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+    state: present
+
+- name: Add Node.js repository
+  ansible.builtin.shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
+- name: Install Node.js
+  ansible.builtin.apt:
+    name: nodejs
+    state: present
+
+- name: Verify Node.js installation
+  ansible.builtin.command: node -v
+  register: node_version
+  changed_when: false
+
+- name: Display Node.js version
+  ansible.builtin.debug:
+    msg: "Node.js version installed: {{ node_version.stdout }}"
+
